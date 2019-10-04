@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nwpu.dao.StudentRecordDao">
+	<resultMap type="com.nwpu.model.StudentRecord" id="BaseResultMap">
+		<id property="payNumber" column="payNumber" />
+		<result property="studentName" column="studentName" />
+		<result property="studentID" column="studentID" />
+		<result property="payKind" column="payKind" />
+		<result property="payPrice" column="payPrice" />
+		<result property="deadline" column="deadline" />
+		<result property="payDate" column="payDate" />
+		<result property="isPay" column="isPay" />
+	</resultMap>
+
+	<!-- 查询： 集合 -->
+	<select id="getStudentRecordList" parameterType="String" resultMap="BaseResultMap">
+		select * from
+		money where studentID=#{studentID}
+	</select>
+	
+	<select id="getStudentRecordListAll" resultMap="BaseResultMap">
+		select * from
+		money
+	</select>
+
+	<!-- 根据学生学号查询交易记录 -->
+	<select id="queryStudentRecordByStudentId" resultMap="BaseResultMap">
+		select *
+		from money where studentID = #{check}
+	</select>
+	
+	<!--  更新  -->
+	<update id="updateStudentRecordByKey" >
+		update money 
+		set isPay = 1, payDate = now() 
+		where payNumber = #{key}
+	</update>
+	
+	<!--  插入  -->
+	<insert id="insertStudentRecord">
+		INSERT INTO money
+		(payNumber,studentID, studentName, 	
+		payKind, payPrice, deadline, 
+		payDate, isPay) 
+		VALUES 
+		(#{payNumber},#{studentID},#{studentName}, 
+		#{payKind}, #{payPrice}, #{deadline},
+		null, 0)
+	</insert>
+	
+	<select id="queryStudentNameByID" parameterType="String" resultType="String">
+		select studentName from student where studentID=#{studentID}
+	</select>
+	
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nwpu.dao.IDormDao">
+	<resultMap type="com.nwpu.model.Dorm" id="dormMap">
+		<id property="dormNumber" column="dormNumber" />
+		<result property="dormKind" column="dormKind" />
+		<result property="dormPrice" column="dormPrice"/>
+		<result property="sex" column="sex"/>
+	</resultMap>
+	
+	<resultMap type="com.nwpu.model.Student" id="studentMap">
+		<id property="studentID" column="studentID" />
+		<result property="studentName" column="studentName" />
+		<result property="staySchool" column="staySchool" />
+		<association property="dorm" javaType="com.nwpu.model.Dorm">
+			<id property="dormNumber" column="dormNumber"/>
+			<result property="dormKind" column="dormKind" />
+		</association>
+	</resultMap>
+	
+	<resultMap type="com.nwpu.model.DormApplication" id="applyMap">
+		<id property="applyNumber" column="applyNumber" />
+		<result property="studentID" column="studentID"/>
+		<result property="applyKind" column="applyKind" />
+		<result property="other" column="other" />
+		<result property="status" column="status" />
+		<result property="date" column="date"/>
+	</resultMap>
+	
+	<resultMap type="com.nwpu.model.Student" id="stuMap">
+		<id property="studentID" column="studentID" />
+		<result property="studentName" column="studentName" />
+		<result property="dormNumber" column="dormNumber" />
+	</resultMap>
+	
+	<!-- 添加宿舍 -->
+	<insert id="insertDorm" parameterType="com.nwpu.model.Dorm">
+		insert into dorm (dormNumber,dormKind,dormPrice,isFull,sex) values (#{dormNumber},#{dormKind},#{dormPrice},#{isFull},#{sex})
+	</insert>
+	
+	<!-- 查询所有宿舍 -->
+	<select id="selectDorm" resultMap="dormMap">
+		SELECT * FROM dorm WHERE dormNumber != "waitForSet" AND dormNumber != "0000"
+	</select>
+	
+	<delete id="deleteDorm" parameterType="String">
+		delete from dorm where dormNumber=#{dormNumber}
+	</delete>
+	
+	<select id="queryStudent" resultMap="studentMap">
+		SELECT s.studentID,s.studentName,d.dormNumber,d.dormKind,s.staySchool FROM student s,dorm d WHERE s.dormNumber=d.dormNumber
+	</select>
+	
+	<select id="queryApply" parameterType="String" resultMap="applyMap">
+		select studentID,applyNumber,applyKind,other,date,status from dormapplication where studentID=#{studentID}
+	</select>
+	
+	<insert id="insertApply" parameterType="com.nwpu.model.DormApplication">
+		insert into dormapplication (applyNumber,applyKind,date,other,studentID,status) values (#{applyNumber},#{applyKind},#{date},#{other},#{studentID},#{status})
+	</insert>
+	
+	<select id="queryStudentById" parameterType="String" resultMap="studentMap">
+		SELECT s.studentID,s.studentName,d.dormNumber,d.dormKind,s.staySchool
+		FROM student s inner join dorm d on s.dormNumber=d.dormNumber 
+		where studentID=#{studentID}
+	</select>
+	
+	<select id="getStudentById" parameterType="String" resultMap="stuMap">
+		select studentID,studentName,dormNumber from student where studentID=#{studentID}
+	</select>
+	
+	<select id="queryStudentByDrom" parameterType="String" resultMap="stuMap">
+		select studentID,studentName,dormNumber from student where dormNumber=#{dormNumber}
+	</select>
+	
+	<select id="queryDormByDormNumber" parameterType="String" resultMap="dormMap" >
+		select * from dorm where dormNumber=#{dormNumber}
+	</select>
+	
+	<update id="updateDorm" parameterType="com.nwpu.model.Dorm">
+		update dorm set dormKind=#{dormKind},dormPrice=#{dormPrice},sex=#{sex} where dormNumber=#{dormNumber}
+	</update>
+	
+	<update id="updateStudent" parameterType="com.nwpu.model.Student">
+		update student set dormNumber=#{dormNumber} where studentID=#{studentID}
+	</update>
+	
+	<select id="queryAllApply" resultMap="applyMap">
+		select * from dormapplication where status is false
+	</select>
+	
+	<update id="updateApply" parameterType="String">
+		update dormapplication set status=true where applyNumber=#{applyNumber}
+	</update>
+</mapper>

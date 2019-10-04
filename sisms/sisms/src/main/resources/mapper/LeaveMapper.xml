@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nwpu.dao.IleaveDao">
+	<resultMap type="com.nwpu.model.Student" id="studentMap">
+		<id property="studentID" column="studentID"/>
+		<result property="studentName" column="studentName" />
+		<result property="sex" column="sex" />
+		<result property="dormNumber" column="dormNumber" />
+		<result property="projectKind" column="projectKind" />
+		<result property="leaveDate" column="leaveDate" />
+		<result property="staySchool" column="staySchool" />
+	</resultMap>
+	
+	<resultMap type="com.nwpu.model.Student" id="studentBorrowMap">
+		<id property="studentID" column="studentID" />
+		<result property="studentName" column="studentName" />
+		<result property="sex" column="sex" />
+		<result property="dormNumber" column="dormNumber" />
+		<result property="projectKind" column="projectKind" />
+		<result property="leaveDate" column="leaveDate" />
+		<result property="staySchool" column="staySchool" />
+		<collection property="borrowBook" ofType="com.nwpu.model.BorrowBook">
+			<id property="borrowID" column="borrowID" />
+			<result property="borrowName" column="borrowName" />
+		</collection>
+	</resultMap>
+	
+	<resultMap type="com.nwpu.model.StudentRecord" id="BaseResultMap">
+		<id property="payNumber" column="payNumber" />
+		<result property="studentName" column="studentName" />
+		<result property="studentID" column="studentID" />
+		<result property="payKind" column="payKind" />
+		<result property="payPrice" column="payPrice" />
+		<result property="deadline" column="deadline" />
+		<result property="payDate" column="payDate" />
+		<result property="isPay" column="isPay" />
+	</resultMap>
+	
+	<select id="queryStudent" parameterType="String" resultMap="studentMap">
+		SELECT * FROM student WHERE leaveDate=#{leave} AND isAdmin is false
+	</select>
+	
+	<select id="queryBorrow" resultMap="studentBorrowMap">
+		select * from student s inner join borrowbook b on s.studentID = b.studentID where leaveDate=#{leave}
+	</select>
+	
+	<select id="queryStudentByID" parameterType="String" resultMap="studentMap">
+		SELECT * FROM student WHERE studentID=#{studentID}
+	</select>
+	
+	<select id="queryBorrowByID" parameterType="String" resultMap="studentBorrowMap">
+		select * from student s inner join borrowbook b on s.studentID = b.studentID where s.studentID=#{studentID}
+	</select>
+	
+	<select id="queryRecordByID" parameterType="String" resultMap="BaseResultMap">
+		select * from
+		money where studentID=#{studentID} AND isPay is false
+	</select>
+	
+	<select id="queryStudentBystuName" parameterType="String" resultMap="studentMap">
+		select * from student where studentName like '%${arg0}%' and leaveDate=#{arg1}
+	</select>
+	
+	<select id="queryBorrowStudentBystuName" parameterType="String" resultMap="studentBorrowMap">
+		select * from student s inner join borrowbook b on s.studentID = b.studentID where studentName like '%${arg0}%' and leaveDate=#{arg1}
+	</select>
+</mapper>

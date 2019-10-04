@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nwpu.dao.TextBookManageDao">
+
+	<resultMap type="com.nwpu.model.Book" id="bookMap">
+		<id property="ISBN" column="ISBN" />
+		<result property="bookName" column="bookName" />
+		<result property="number" column="number" />
+		<result property="bookPrice" column="bookPrice" />
+		<result property="auditing" column="auditing" />
+		<result property="requirment" column="requirment" />
+		<result property="providing" column="providing" />
+		<result property="semeter" column="semeter" />
+		<result property="totalFine" column="totalFine" />
+	</resultMap>
+	
+	<!-- 查询 -->
+	<select id="queryBook" resultMap="bookMap">
+		select * from book
+	</select>
+	
+	<!-- 删除 -->
+	<delete id="deleteBook" parameterType="String">
+		delete from book where ISBN=#{ISBN}
+	</delete>
+	
+	<!-- 添加 -->
+	<insert id="insertBook" parameterType="com.nwpu.model.Book">
+		insert into book (ISBN,bookName,number,bookPrice,auditing,requirment,providing,semeter) values 
+		(#{ISBN},#{bookName},#{number},#{bookPrice},#{auditing},#{requirment},#{providing},#{semeter})
+	</insert>
+	
+	<!-- 查询某本教材 By ISBN -->
+	<select id="queryBookByISBN" parameterType="String" resultMap="bookMap">
+		select * from book where ISBN=#{ISBN}
+	</select>
+	
+	<!-- 更新 -->
+	<update id="updateBook" parameterType="com.nwpu.model.Book">
+		update book set bookName=#{bookName},number=#{number},bookPrice=#{bookPrice},auditing=#{auditing},
+		requirment=#{requirment},providing=#{providing},semeter=#{semeter} where ISBN=#{ISBN}
+	</update>
+	
+	<!-- 模糊查询教材 by bookName -->
+	<select id="queryBookByBookName" parameterType="String"  resultMap="bookMap">
+		select * from book where bookName like '%${_parameter}%'
+	</select>
+	
+</mapper>

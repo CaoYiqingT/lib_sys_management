@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nwpu.dao.ILoginDao">
+
+	<select id="login" parameterType="String" resultType="String">
+		select identifyID from student where studentID=#{studentID}
+	</select>
+	
+	<select id="isAdmin" parameterType="String" resultType="boolean">
+		select isAdmin from student where studentID=#{studentID}
+	</select>
+	
+	<select id="getNameById" parameterType="String" resultType="String">
+		select studentName from student where studentID=#{studentID}
+	</select>
+	
+	<select id="getNotice" resultType="String">
+		select context from notice where noticeID="1501"
+	</select>
+	
+	<update id="resetPassword" parameterType="String">
+	    update Student set password="000100001"
+	    where studentId=#{studentId}
+	</update>
+</mapper>

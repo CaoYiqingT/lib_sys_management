@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nwpu.dao.IStudentDao">
+	<resultMap type="com.nwpu.model.Student" id="studentMap">
+		<id property="studentID" column="studentID" />
+		<result property="studentName" column="studentName" />
+		<result property="sex" column="sex" />
+		<result property="identifyID" column="identifyID" />
+		<result property="dormNumber" column="dormNumber" />
+		<result property="dormNumber" column="dormNumber" />
+		<result property="projectKind" column="projectKind" />
+		<result property="classID" column="classID" />
+		<result property="QQemail" column="QQemail" />
+	</resultMap>
+	
+	
+	<select id="queryEmailByID" parameterType="String" resultMap="studentMap">
+	    select QQemail from student where studentID=#{studentID}
+	</select>
+	
+	<resultMap type="com.nwpu.model.Dorm" id="dormMap">
+		<id property="dormNumber" column="dormNumber" />
+		<result property="dormKind" column="dormKind" />
+	</resultMap>
+	
+	<!-- 查询所有学生 -->
+	<select id="queryStudent" resultMap="studentMap">
+		select * from student where isAdmin=false
+	</select>
+	
+	<!-- 查询特定学生 by studentID -->
+	<select id="queryStudentBystuID" parameterType="String" resultMap="studentMap">
+		select * from student where studentID=#{studentID}
+	</select>
+	<!-- 查询特定学生 by studentName -->
+	<select id="queryStudentBystuName" parameterType="String" resultMap="studentMap">
+		select * from student where studentName like '%${_parameter}%'
+	</select>	
+	<!-- 插入学生 -->
+	<insert id="insertStudent" parameterType="com.nwpu.model.Student">
+		insert into student (studentID,studentName,dormNumber,sex,identifyID,projectKind,classID,isAdmin,staySchool,leaveDate) 
+		values 
+		(#{studentID},#{studentName},#{dormNumber},#{sex},#{identifyID},#{projectKind},#{classID},#{isAdmin},#{staySchool},#{leaveDate})
+	</insert>
+	<!-- 删除学生 -->
+	<delete id="deleteStudent" parameterType="String">
+		delete from student where studentID=#{studentID} 
+	</delete>
+	
+	<!-- 更新学生 -->
+	<update id="updateStudent" parameterType="com.nwpu.model.Student" >
+		update student set studentID=#{studentID},studentName=#{studentName},dormNumber=#{dormNumber},
+		sex=#{sex},identifyID=#{identifyID},projectKind=#{projectKind}, classID=#{classID} where identifyID=#{identifyID}
+	</update>
+	
+	<select id="queryNewStudent" resultMap="studentMap">
+		SELECT * FROM student WHERE isAdmin=FALSE AND dormNumber="waitForSet"
+	</select>
+	
+	<select id="queryMaleDorm" resultMap="dormMap">
+		SELECT * FROM dorm WHERE isFull IS FALSE and sex="男宿"
+	</select>
+	
+	<select id="queryFemaleDorm" resultMap="dormMap">
+		SELECT * FROM dorm WHERE isFull IS FALSE and sex="女宿"
+	</select>
+	
+	<select id="queryNewStudentFemale" resultMap="studentMap">
+		SELECT * FROM student WHERE isAdmin=FALSE AND dormNumber="waitForSet" AND sex="女"
+	</select>
+	
+	<select id="queryNewStudentMale" resultMap="studentMap">
+		SELECT * FROM student WHERE isAdmin=FALSE AND dormNumber="waitForSet" AND sex="男"
+	</select>
+	
+	<update id="updateDorm" parameterType="com.nwpu.model.Dorm">
+		update dorm set isFull = #{isFull} where dormNumber = #{dormNumber}
+	</update>
+</mapper>
